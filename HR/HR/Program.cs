@@ -19,13 +19,12 @@ namespace HR
             Employee2.CalculateSalary();
             Employee3.CalculateSalary();
 
-            EmployeeManagement Management = new EmployeeManagement();
-            Management.AddEmployee(Employee1);
-            Management.AddEmployee(Employee2);
-            Management.AddEmployee(Employee3);
+            EmployeeManagement AddNewEmployee = new EmployeeManagement();
+            AddNewEmployee.AddEmployee(Employee1);
+            AddNewEmployee.AddEmployee(Employee2);
+            AddNewEmployee.AddEmployee(Employee3);
 
-            Management.ListEmployee();
-           
+            AddNewEmployee.ListEmployee();
         }
     }
 }

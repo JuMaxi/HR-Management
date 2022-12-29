@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,17 +8,18 @@ namespace HR
 {
     internal class EmployeeManagement
     {
-        List<Employee> Admission = new List<Employee>();
+        List<Employee> NewHiredEmployee = new List<Employee>();
 
-        public void AddEmployee(Employee NewEmployeeName)
+        public void AddEmployee(Employee NewEmployee)
         {
-            Admission.Add(NewEmployeeName);
+            NewHiredEmployee.Add(NewEmployee);
         }
+
         public void ListEmployee()
         {
-            foreach(Employee line in Admission)
+            foreach(Employee Line in NewHiredEmployee)
             {
-                Console.WriteLine("Employee Name: " + line.Name + "\t CPF: " + line.CPF + " \t Registry: " + line.Registry + " \t Date Start: " + line.DateStart);
+                Console.WriteLine("Employee Name: " + Line.Name + "\t CPF: " + Line.CPF + "\t Registry: " + Line.Registry + "\t Date Start: " + Line.DateStart);
             }
         }
     }
