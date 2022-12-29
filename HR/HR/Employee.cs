@@ -9,16 +9,16 @@ namespace HR
     internal class Employee
     {
         public string Name;
-        public string CPF;
         public string Registry;
+        public string CPF;
         public string DateStart;
         public double MonthlySalary;
 
-        public void Initialize(string NameEmployee, string NumberCPF, string NumberRegistry, string Date, double Salary)
+        public void Initialize(string NameEmployee, string NumberRegistry, string NumberCPF, string Date, double Salary)
         {
             Name = NameEmployee;
-            CPF = NumberCPF;
             Registry = NumberRegistry;
+            CPF = NumberCPF;
             DateStart = Date;
             MonthlySalary = Salary;
         }
