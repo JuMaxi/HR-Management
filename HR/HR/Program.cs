@@ -10,13 +10,16 @@ namespace HR
         static void Main(string[] args)
         {
             Employee Employee1 = new Employee();
-            Employee1.Initialize("Joao da Silva", "45.125", "123.456.789-10", "01/12/2022", 3000);
+            DateTime Date1 = new DateTime(2022, 12, 01);
+            Employee1.Initialize("Joao da Silva", "45.125", "123.456.789-10", Date1, 3000);
             
             Employee Employee2 = new Employee();
-            Employee2.Initialize("Joao Santos", "45.121", "234.569.458-23", "10/12/2022", 1800);
+            DateTime Date2 = new DateTime(2022, 12, 10);
+            Employee2.Initialize("Joao Santos", "45.121", "234.569.458-23", Date2, 1800);
 
             Employee Employee3 = new Employee();
-            Employee3.Initialize("Maria Lima", "45.123", "564.425.569-40", "12/12/2022", 2500);
+            DateTime Date3 = new DateTime(2022, 12, 12);
+            Employee3.Initialize("Maria Lima", "45.123", "564.425.569-40", Date3, 2500);
 
             Employee1.CalculateSalary();
             Employee2.CalculateSalary();
@@ -27,8 +30,6 @@ namespace HR
             AddNewEmployee.AddEmployee(Employee2);
             AddNewEmployee.AddEmployee(Employee3);
 
-            //AddNewEmployee.ListEmployee();
-
             string Path = @"C:\Dev\RH\HR\HR\Employees.csv";
             string[] Read = File.ReadAllLines(Path);
 
@@ -37,17 +38,19 @@ namespace HR
                 string[] Break = Read[Position].Split(";");
                 Employee Employee4 = new Employee();
 
-                string teste = Break[4];
-                teste = teste.Replace(".","");
-                teste = teste.Replace(',','.');
+                string DateReplace = Break[3];
+                DateReplace = DateReplace.Replace('-', '/');
+                DateTime Date = Convert.ToDateTime(DateReplace);
 
-                double Salary = Convert.ToDouble(teste);
+                string SalaryReplace = Break[4];
+                SalaryReplace = SalaryReplace.Replace(".","");
+                SalaryReplace = SalaryReplace.Replace(',','.');
+                double Salary = Convert.ToDouble(SalaryReplace);
 
-                Employee4.Initialize(Break[0], Break[1], Break[2], Break[3], Salary);
+                Employee4.Initialize(Break[0], Break[1], Break[2], Date, Salary);
 
                 AddNewEmployee.AddEmployee(Employee4);
 
-                Employee4.CalculateSalary();
             }
 
             AddNewEmployee.ListEmployee();

@@ -11,10 +11,10 @@ namespace HR
         public string Name;
         public string Registry;
         public string CPF;
-        public string DateStart;
+        public DateTime DateStart;
         public double MonthlySalary;
 
-        public void Initialize(string NameEmployee, string NumberRegistry, string NumberCPF, string Date, double Salary)
+        public void Initialize(string NameEmployee, string NumberRegistry, string NumberCPF, DateTime Date, double Salary)
         {
             Name = NameEmployee;
             Registry = NumberRegistry;

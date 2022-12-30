@@ -22,5 +22,10 @@ namespace HR
                 Console.WriteLine("Employee Name: " + Line.Name + "\t CPF: " + Line.CPF + "\t Registry: " + Line.Registry + "\t Date Start: " + Line.DateStart);
             }
         }
+
+        public void ShowBirthdayCompany()
+        {
+
+        }
     }
 }
