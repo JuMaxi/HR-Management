@@ -13,6 +13,7 @@ namespace HR
             DateTime Date1 = new DateTime(2022, 12, 01);
             Employee1.Initialize("Joao da Silva", "45.125", "123.456.789-10", Date1, 3000);
             
+            
             Employee Employee2 = new Employee();
             DateTime Date2 = new DateTime(2022, 12, 10);
             Employee2.Initialize("Joao Santos", "45.121", "234.569.458-23", Date2, 1800);
@@ -30,6 +31,7 @@ namespace HR
             AddNewEmployee.AddEmployee(Employee2);
             AddNewEmployee.AddEmployee(Employee3);
 
+            // Part 4
             string Path = @"C:\Dev\RH\HR\HR\Employees.csv";
             string[] Read = File.ReadAllLines(Path);
 
@@ -50,10 +52,15 @@ namespace HR
                 Employee4.Initialize(Break[0], Break[1], Break[2], Date, Salary);
 
                 AddNewEmployee.AddEmployee(Employee4);
-
+                
             }
 
             AddNewEmployee.ListEmployee();
+
+            // Part 5
+            AddNewEmployee.ShowBirthdayCompany();
+
+
         }
     }
 }

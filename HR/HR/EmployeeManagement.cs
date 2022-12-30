@@ -25,7 +25,25 @@ namespace HR
 
         public void ShowBirthdayCompany()
         {
+            DateTime Now = DateTime.Now;
+            DateTime Now15Days = Now.AddDays(15);
 
+            for(int Position = 0; Position < NewHiredEmployee.Count; Position++)
+            {
+                Employee Birthday = NewHiredEmployee[Position];
+                DateTime DateBegin = Birthday.DateStart;
+                int YearsAdd = Now15Days.Year - DateBegin.Year;
+                if(YearsAdd > 0)
+                {
+                    DateBegin = DateBegin.AddYears(YearsAdd);
+
+                    if (DateBegin >= Now && DateBegin <= Now15Days)
+                    {
+                        Console.WriteLine(" ");
+                        Console.WriteLine("Congratulations!!! " + NewHiredEmployee[Position].Name + " Now you are having 1 year with us! We hope to have a lot more years together!");
+                    }
+                }
+            }
         }
     }
 }
