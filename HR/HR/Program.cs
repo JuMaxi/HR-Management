@@ -60,6 +60,9 @@ namespace HR
             // Part 5
             AddNewEmployee.ShowBirthdayCompany();
 
+            // Part 6
+            AddNewEmployee.FindOldestEmployee();
+
 
         }
     }
