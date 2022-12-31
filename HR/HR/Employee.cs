@@ -23,22 +23,7 @@ namespace HR
             MonthlySalary = Salary;
         }
 
-        public double CalculateSalary()
-        {
-            double INSS = MonthlySalary * 0.07;
-            double IR = (MonthlySalary - INSS) * 0.15;
-
-            double LiquidSalary = MonthlySalary - INSS - IR;
-
-            Console.WriteLine("Hello, " + Name + ", Number Registry " + Registry + " follow below your salary details: ");
-            Console.WriteLine("Monthly Salary: £ " + MonthlySalary);
-            Console.WriteLine("INSS: £ (" + INSS + ")");
-            Console.WriteLine("IRRF: £ (" + IR + ")");
-            Console.WriteLine("Liquid Salary: £ " + LiquidSalary);
-            Console.WriteLine(" ");
-
-            return LiquidSalary;
-        }
+       
         
     }
 }

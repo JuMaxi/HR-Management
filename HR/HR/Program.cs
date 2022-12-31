@@ -22,9 +22,6 @@ namespace HR
             DateTime Date3 = new DateTime(2022, 12, 12);
             Employee3.Initialize("Maria Lima", "45.123", "564.425.569-40", Date3, 2500);
 
-            Employee1.CalculateSalary();
-            Employee2.CalculateSalary();
-            Employee3.CalculateSalary();
 
             EmployeeManagement AddNewEmployee = new EmployeeManagement();
             AddNewEmployee.AddEmployee(Employee1);
@@ -63,6 +60,9 @@ namespace HR
             // Part 6
             AddNewEmployee.FindOldestEmployee();
 
+            // Part 7
+            DateTime Competencia = new DateTime(2022, 12, 01);
+            AddNewEmployee.CalculateSalary(Competencia);
 
         }
     }
