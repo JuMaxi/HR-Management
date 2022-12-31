@@ -44,6 +44,7 @@ namespace HR
                     {
                         Console.WriteLine(" ");
                         Console.WriteLine("Congratulations!!! " + NewHiredEmployee[Position].Name + " Now you are having 1 year with us! We hope to have a lot more years together!");
+                        Console.WriteLine(" ");
                     }
                 }
             }
@@ -71,8 +72,8 @@ namespace HR
                     int Day = Today.Day - Line.DateStart.Day;
 
                     Console.WriteLine(" ");
-                    Console.WriteLine(Line.Name + " you are the oldest employee in this company. You hav66" +
-                        "e been with us since " + Line.DateStart.ToString("dd/MM/yyyy") + " for this reason your total time working here is " + Year + " year(s) " + Month + " month(s) and " + Day + " day(s). We Hope you continue with us for a long time!");
+                    Console.WriteLine(Line.Name + " you are the oldest employee in this company. You have been with us since " + Line.DateStart.ToString("dd/MM/yyyy") + " for this reason your total time working here is " + Year + " year(s) " + Month + " month(s) and " + Day + " day(s). We Hope you continue with us for a long time!");
+                    Console.WriteLine(" ");
                 }
             }
         }
@@ -108,12 +109,12 @@ namespace HR
 
                     Console.WriteLine(" ");
                     Console.WriteLine("Hello, " + Line.Name + ", Number Registry " + Line.Registry + " follow below your salary details: ");
-                    Console.WriteLine("Monthly Salary: £ " +Line.MonthlySalary);
+                    Console.WriteLine("Monthly Salary: " + (Line.MonthlySalary).ToString("C2"));
                     Console.WriteLine("Worked days in " + Competencia.Month + "/" + Competencia.Year + ": " + DaysWorked);
-                    Console.WriteLine("Monthly Salary Proportional Worked Days: £ " + Salary);
-                    Console.WriteLine("INSS: £ (" + INSS + ")");
-                    Console.WriteLine("IRRF: £ (" + IRRF + ")");
-                    Console.WriteLine("Liquid Salary: £ " + LiquidSalary);
+                    Console.WriteLine("Monthly Salary Proportional Worked Days: "+ Salary.ToString("C2"));
+                    Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
+                    Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
+                    Console.WriteLine("Liquid Salary: " + LiquidSalary.ToString("C2"));
                     Console.WriteLine(" ");
                 }
             }
