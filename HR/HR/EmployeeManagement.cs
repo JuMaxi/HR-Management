@@ -149,5 +149,17 @@ namespace HR
                 }
             }
         }
+
+        public void PromoteEmployee(string Registry, double Percentage)
+        {
+            foreach(Employee Line in NewHiredEmployee)
+            {
+                if(Line.Registry == Registry)
+                {
+                    double Promote = (Line.MonthlySalary) * Percentage;
+                    Line.MonthlySalary = Line.MonthlySalary + Promote;
+                }
+            }
+        }
     }
 }

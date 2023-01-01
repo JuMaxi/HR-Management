@@ -29,7 +29,7 @@ namespace HR
             AddNewEmployee.AddEmployee(Employee3);
 
             // Part 4
-            string Path = @"C:\Dev\RH\HR\HR\Employees.csv";
+            string Path = @"C:\Dev\RH\HR\HR\Employees2.csv";
             string[] Read = File.ReadAllLines(Path);
 
             for(int Position = 1; Position < Read.Length; Position++) 
@@ -49,7 +49,6 @@ namespace HR
                 Employee4.Initialize(Break[0], Break[1], Break[2], Date, Salary);
 
                 AddNewEmployee.AddEmployee(Employee4);
-                
             }
 
             AddNewEmployee.ListEmployee();
@@ -60,14 +59,15 @@ namespace HR
             // Part 6
             AddNewEmployee.FindOldestEmployee();
 
+            // Part 10
+            AddNewEmployee.PromoteEmployee("55525", 0.10);
+
             // Part 7
             DateTime Competencia = new DateTime(2022, 12, 01);
             AddNewEmployee.CalculateSalary(Competencia);
 
             //Part 8
-            string Dismiss = "25936";
-            AddNewEmployee.DismissEmployee(Dismiss);
-
+            AddNewEmployee.DismissEmployee("25936");
         }
     }
 }
