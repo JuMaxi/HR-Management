@@ -14,7 +14,23 @@ namespace HR
 
         public void AddEmployee(Employee NewEmployee)
         {
-            NewHiredEmployee.Add(NewEmployee);
+            bool NoAdd = false;
+
+            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
+            {
+                if (NewEmployee.Registry == NewHiredEmployee[Position].Registry)
+                {
+                    NoAdd = true;
+
+                    Console.WriteLine(" ");
+                    Console.WriteLine("This Employee, Registry Number " + NewEmployee.Registry + " have already been hired. For this reason, your Add was not completed.");
+                    Console.WriteLine(" ");
+                }
+            }
+            if (NoAdd == false)
+            {
+                NewHiredEmployee.Add(NewEmployee);
+            }
         }
 
         public void ListEmployee()
@@ -125,6 +141,10 @@ namespace HR
             {
                 if (NewHiredEmployee[Position].Registry == Registry)
                 {
+                    Console.WriteLine(" ");
+                    Console.WriteLine("The Employee " + NewHiredEmployee[Position].Name + " Registry Number: " + NewHiredEmployee[Position].Registry + " was Dismiss.");
+                    Console.WriteLine(" ");
+
                     NewHiredEmployee.Remove(NewHiredEmployee[Position]);
                 }
             }
