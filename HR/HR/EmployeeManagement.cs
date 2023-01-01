@@ -91,7 +91,7 @@ namespace HR
                     int DaysWorked = 0;
 
                     //Para verificar se o funcionario foi contratado no mesmo mes e ano da competencia de pagamento e em caso positivo, calcular o salario proporcional
-                    if(Line.DateStart.Month == Competencia.Month && Line.DateStart.Year == Competencia.Year)
+                    if (Line.DateStart.Month == Competencia.Month && Line.DateStart.Year == Competencia.Year)
                     {
                         DaysWorked = ((DaysMonth - Line.DateStart.Day) + 1);
                         Salary = (Line.MonthlySalary / DaysMonth) * DaysWorked;
@@ -111,11 +111,21 @@ namespace HR
                     Console.WriteLine("Hello, " + Line.Name + ", Number Registry " + Line.Registry + " follow below your salary details: ");
                     Console.WriteLine("Monthly Salary: " + (Line.MonthlySalary).ToString("C2"));
                     Console.WriteLine("Worked days in " + Competencia.Month + "/" + Competencia.Year + ": " + DaysWorked);
-                    Console.WriteLine("Monthly Salary Proportional Worked Days: "+ Salary.ToString("C2"));
+                    Console.WriteLine("Monthly Salary Proportional Worked Days: " + Salary.ToString("C2"));
                     Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
                     Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
                     Console.WriteLine("Liquid Salary: " + LiquidSalary.ToString("C2"));
                     Console.WriteLine(" ");
+                }
+            }
+        }
+        public void DismissEmployee(string Registry)
+        {
+            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
+            {
+                if (NewHiredEmployee[Position].Registry == Registry)
+                {
+                    NewHiredEmployee.Remove(NewHiredEmployee[Position]);
                 }
             }
         }

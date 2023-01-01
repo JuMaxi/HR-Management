@@ -64,6 +64,10 @@ namespace HR
             DateTime Competencia = new DateTime(2022, 12, 01);
             AddNewEmployee.CalculateSalary(Competencia);
 
+            //Part 8
+            string Dismiss = "25936";
+            AddNewEmployee.DismissEmployee(Dismiss);
+
         }
     }
 }
