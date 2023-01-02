@@ -62,6 +62,9 @@ namespace HR
             // Part 10
             AddNewEmployee.PromoteEmployee("55525", 0.10);
 
+            //Part 11
+            AddNewEmployee.UnionAgreement(0.0546);
+
             // Part 7
             DateTime Competencia = new DateTime(2022, 12, 01);
             AddNewEmployee.CalculateSalary(Competencia);

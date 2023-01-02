@@ -161,5 +161,13 @@ namespace HR
                 }
             }
         }
+
+        public void UnionAgreement(double Percentage)
+        {
+            foreach (Employee Line in NewHiredEmployee)
+            {
+                PromoteEmployee(Line.Registry, Percentage);
+            }
+        }
     }
 }
