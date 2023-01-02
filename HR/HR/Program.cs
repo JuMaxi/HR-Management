@@ -71,6 +71,10 @@ namespace HR
 
             //Part 8
             AddNewEmployee.DismissEmployee("25936");
+
+            //Part 13
+            DateTime Year13 = new DateTime(2022, 12, 31);
+            AddNewEmployee.Calculate13Salary(Year13);
         }
     }
 }

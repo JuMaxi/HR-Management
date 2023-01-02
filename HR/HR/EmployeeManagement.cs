@@ -215,5 +215,49 @@ namespace HR
                 }
             }
         }
+
+        public void Calculate13Salary(DateTime Year13)
+        {
+            double LiquidSalary13 = 0;
+
+            foreach(Employee Line in NewHiredEmployee)
+            {
+                if (Year13.Year >= Line.DateStart.Year)
+                {
+                    double Salary13 = 0;
+
+                    if (Year13.Year == Line.DateStart.Year)
+                    {
+                        int ProportionalMonths13 = (Year13.Month - Line.DateStart.Month) + 1;
+
+                        if (Line.DateStart.Day > 15)
+                        {
+                            ProportionalMonths13 = ProportionalMonths13 - 1;
+                        }
+
+                        Salary13 = (Line.MonthlySalary / 12) * (ProportionalMonths13);
+                    }
+                    else
+                    {
+                        Salary13 = Line.MonthlySalary;
+                    }
+
+                    double INSS = Salary13 * 0.07;
+                    double IRRF = (Salary13 - INSS) * 0.15;
+
+                    LiquidSalary13 = Salary13 - INSS - IRRF;
+
+                    if(LiquidSalary13 > 0)
+                    {
+                        Console.WriteLine(" ");
+                        Console.WriteLine(Line.Name + " Number Registry: " + Line.Registry + " Your 13 Salary about year " + Year13.Year + " is " + Salary13.ToString("C2") + ", follow below the detailes about the payment: ");
+                        Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
+                        Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
+                        Console.WriteLine("Liquid Salary 13: " + LiquidSalary13.ToString("C2"));
+                        Console.WriteLine(" ");
+                    }
+                }
+            }
+        }
     }
 }
