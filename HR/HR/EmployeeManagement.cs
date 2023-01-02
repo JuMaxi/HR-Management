@@ -152,9 +152,9 @@ namespace HR
 
         public void PromoteEmployee(string Registry, double Percentage)
         {
-            foreach(Employee Line in NewHiredEmployee)
+            foreach (Employee Line in NewHiredEmployee)
             {
-                if(Line.Registry == Registry)
+                if (Line.Registry == Registry)
                 {
                     double Promote = (Line.MonthlySalary) * Percentage;
                     Line.MonthlySalary = Line.MonthlySalary + Promote;
@@ -166,7 +166,53 @@ namespace HR
         {
             foreach (Employee Line in NewHiredEmployee)
             {
-                PromoteEmployee(Line.Registry, Percentage);
+                DateTime Now = DateTime.Now;
+                int WorkedMonthsYear = 0;
+
+                int Year = Now.Year - Line.DateStart.Year;
+                int Months = Now.Month - Line.DateStart.Month;
+
+                if (Year < 2)
+                {
+                    if(Year == 1)
+                    {
+                        if (Months != 0)
+                        {
+                            if (Months < 0)
+                            {
+                                WorkedMonthsYear = Months + 11;
+                            }
+                            else
+                            {
+                                WorkedMonthsYear = Months - 1;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        WorkedMonthsYear = Months - 1;
+                    }
+                    //Calcula o percentual proporcional mensal;
+                    double ProportionalPercentageMonth = (Percentage / 12);
+
+                    //Calcula quantos dias tem o mes de contratacao;
+                    int DaysMonth = System.DateTime.DaysInMonth(Line.DateStart.Year, Line.DateStart.Month);
+
+                    //Calcula o percentual proporcional diario;
+                    double ProportionalPercentageDay = ProportionalPercentageMonth / DaysMonth;
+
+                    //Calcula os dias trabalhados no mes de contratacao
+                    int WorkedDaysMonth = (DaysMonth - Line.DateStart.Day) + 1;
+
+                    //Calcula os totais proporcionais de meses/anocontratacao trabalhados e dias/mes contratacao trabalhados;
+                    double TotalProportionalPercentage = (ProportionalPercentageMonth * WorkedMonthsYear) + (ProportionalPercentageDay * WorkedDaysMonth);
+
+                    PromoteEmployee(Line.Registry, TotalProportionalPercentage);
+                }
+                else
+                {
+                    PromoteEmployee(Line.Registry, Percentage);
+                }
             }
         }
     }
