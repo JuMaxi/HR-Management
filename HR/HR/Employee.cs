@@ -23,7 +23,41 @@ namespace HR
             MonthlySalary = Salary;
         }
 
-       
-        
+        public void Validate()
+        {
+            string NameTrim = Name.Trim();
+            Name = NameTrim;
+
+            if (Name.IndexOf(" ") < 0)
+            {
+                throw new Exception("The name is not completed. You must fll this place with the Complet Name.");
+            }
+
+            if (Name == " ")
+            {
+                throw new Exception("The Name is null. You must fill this place");
+            }
+            if (Registry == " ")
+            {
+                throw new Exception("The Registry is null. For continue, you must fill this place.");
+            }
+            if (CPF == " ")
+            {
+                throw new Exception("The CPF is null. For continue, you must fill this place.");
+            }
+            if (MonthlySalary < 0)
+            {
+                throw new Exception("The Monthly Salary is null. For continue, you must fill this place with a value bigger than zero.");
+            }
+
+
+        }
+
+
+
+
+
+
+
     }
 }

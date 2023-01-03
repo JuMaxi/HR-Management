@@ -16,6 +16,8 @@ namespace HR
         {
             bool NoAdd = false;
 
+            NewEmployee.Validate();
+
             for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
                 if (NewEmployee.Registry == NewHiredEmployee[Position].Registry)
@@ -174,7 +176,7 @@ namespace HR
 
                 if (Year < 2)
                 {
-                    if(Year == 1)
+                    if (Year == 1)
                     {
                         if (Months != 0)
                         {
@@ -220,7 +222,7 @@ namespace HR
         {
             double LiquidSalary13 = 0;
 
-            foreach(Employee Line in NewHiredEmployee)
+            foreach (Employee Line in NewHiredEmployee)
             {
                 if (Year13.Year >= Line.DateStart.Year)
                 {
@@ -247,7 +249,7 @@ namespace HR
 
                     LiquidSalary13 = Salary13 - INSS - IRRF;
 
-                    if(LiquidSalary13 > 0)
+                    if (LiquidSalary13 > 0)
                     {
                         Console.WriteLine(" ");
                         Console.WriteLine(Line.Name + " Number Registry: " + Line.Registry + " Your 13 Salary about year " + Year13.Year + " is " + Salary13.ToString("C2") + ", follow below the detailes about the payment: ");
