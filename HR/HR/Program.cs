@@ -109,6 +109,10 @@ namespace HR
             //Part 13
             DateTime Year13 = new DateTime(2022, 12, 31);
             AddNewEmployee.Calculate13Salary(Year13);
+
+            //Part 15
+            DateTime Exit = new DateTime(2023, 01, 03);
+            AddNewEmployee.Rescisao("2926", Exit);
         }
     }
 }
