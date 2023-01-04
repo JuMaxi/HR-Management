@@ -168,49 +168,32 @@ namespace HR
         {
             foreach (Employee Line in NewHiredEmployee)
             {
-                DateTime Now = DateTime.Now;
-                int WorkedMonthsYear = 0;
+                DateTime YearAgreement = new DateTime(2022, 12, 31);
+                TimeSpan Time = YearAgreement - Line.DateStart;
 
-                int Year = Now.Year - Line.DateStart.Year;
-                int Months = Now.Month - Line.DateStart.Month;
-
-                if (Year < 2)
+                if (Time.Days < 365)
                 {
-                    if (Year == 1)
+                    double ProportionalPercentage = 0;
+
+                    if (Time.Days < 30)
                     {
-                        if (Months != 0)
-                        {
-                            if (Months < 0)
-                            {
-                                WorkedMonthsYear = Months + 11;
-                            }
-                            else
-                            {
-                                WorkedMonthsYear = Months - 1;
-                            }
-                        }
+                        ProportionalPercentage = Percentage / 12;
                     }
                     else
                     {
-                        WorkedMonthsYear = Months - 1;
+                        if (Time.Days % 30 != 0)
+                        {
+                            ProportionalPercentage = (Percentage / 12) * ((Time.Days / 30) + 1);
+                        }
+                        else
+                        {
+                            ProportionalPercentage = (Percentage / 12) * (Time.Days / 30);
+                        }
                     }
-                    //Calcula o percentual proporcional mensal;
-                    double ProportionalPercentageMonth = (Percentage / 12);
 
-                    //Calcula quantos dias tem o mes de contratacao;
-                    int DaysMonth = System.DateTime.DaysInMonth(Line.DateStart.Year, Line.DateStart.Month);
-
-                    //Calcula o percentual proporcional diario;
-                    double ProportionalPercentageDay = ProportionalPercentageMonth / DaysMonth;
-
-                    //Calcula os dias trabalhados no mes de contratacao
-                    int WorkedDaysMonth = (DaysMonth - Line.DateStart.Day) + 1;
-
-                    //Calcula os totais proporcionais de meses/anocontratacao trabalhados e dias/mes contratacao trabalhados;
-                    double TotalProportionalPercentage = (ProportionalPercentageMonth * WorkedMonthsYear) + (ProportionalPercentageDay * WorkedDaysMonth);
-
-                    PromoteEmployee(Line.Registry, TotalProportionalPercentage);
+                    PromoteEmployee(Line.Registry, ProportionalPercentage);
                 }
+
                 else
                 {
                     PromoteEmployee(Line.Registry, Percentage);
@@ -268,10 +251,9 @@ namespace HR
             {
                 if (NumberRegistry == Line.Registry)
                 {
-                    //CALCULO DE FERIAS
-
                     double ProportionalDaysMonthExit = 0;
                     int Months = (DateExit.Month - Line.DateStart.Month) + 1;
+                    double ProportionalSalary = 0;
 
                     //Calculo meses cheios trabalhados ate mes anterior a demissao;
                     if (Months <= 0)
@@ -284,7 +266,8 @@ namespace HR
                         Months = Months - 1;
                     }
 
-                    double ProportionalMonths = (Line.MonthlySalary / 12) * Months;
+                    //Calculo meses de ferias proporcionais
+                    double ProportionalHolidaysMonths = (Line.MonthlySalary / 12) * Months;
 
                     //Calculo dias devidos no mes de demissao;
                     if (DateExit.Day > 15)
@@ -296,55 +279,26 @@ namespace HR
                         ProportionalDaysMonthExit = ((Line.MonthlySalary / 12) / DaysinMonth) * DateExit.Day;
 
                         //Calculo salario do mes proporcional aos dias trabalhados, considerando que a demissao ocorreu apos o dia 15;
-                        double ProportionalSalary = (Line.MonthlySalary / DaysinMonth) * DateExit.Day;
+                        ProportionalSalary = (Line.MonthlySalary / DaysinMonth) * DateExit.Day;
 
-                        //Impostos s/ Proportional Salary;
-                        double INSSSalary = ProportionalSalary * 0.07;
-                        double IRRFSalary = (ProportionalSalary - INSSSalary) * 0.15;
-
-                        //Calculo Salario Proporcional Liquido 
-                        double LiquidProportionalSalary = ProportionalSalary - INSSSalary - IRRFSalary;
-
-                        if(LiquidProportionalSalary > 0)
-                        {
-                            Console.WriteLine("Calculation Proportional Salary Rescisao");
-                            Console.WriteLine("---------------------------------------------");
-                            Console.WriteLine("Montly Salary: " + (Line.MonthlySalary).ToString("C2"));
-                            Console.WriteLine("Worked Days in " + DateExit.Month + ": " + DateExit.Day);
-                            Console.WriteLine("Proportional Montly Salary, about Worked Days: " + (ProportionalSalary).ToString("C2"));
-                            Console.WriteLine("INSS s/ Proportional Montly Salary: " + (-INSSSalary).ToString("C2"));
-                            Console.WriteLine("IRRF s/ Proportional Montly Salary: " + (-IRRFSalary).ToString("C2"));
-                            Console.WriteLine("Proportional Montly Salary to receive: " + (LiquidProportionalSalary).ToString("C2"));
-                        }
                     }
 
                     //Calculo total proporcionais mensal e diario + (1/3) s/ ferias;
-                    double Add33LaborHolidays = (ProportionalDaysMonthExit + ProportionalMonths) * 0.33;
-                    double LaborHolidays = ProportionalDaysMonthExit + ProportionalMonths + Add33LaborHolidays;
+                    double Add33LaborHolidays = (ProportionalDaysMonthExit + ProportionalHolidaysMonths) * 0.33;
 
-                    //Impostos s/ LaborHolidays (um terco sobre ferias nao e devido impostos);
-                    double INSSLaborHolidays = (ProportionalDaysMonthExit + ProportionalMonths) * 0.07;
-                    double IRRFLaborHolidays = ((ProportionalDaysMonthExit + ProportionalMonths) - INSSLaborHolidays) * 0.15;
+                    //Impostos s/ LaborHolidays + Proportional Salary;
+                    double INSS = (ProportionalDaysMonthExit + ProportionalHolidaysMonths + ProportionalSalary) * 0.07;
+                    double IRRF = ((ProportionalDaysMonthExit + ProportionalHolidaysMonths + ProportionalSalary) - INSS) * 0.15;
 
-                    //Calculo liquido de Ferias
-                    double LiquidLaborHolidays = LaborHolidays - INSSLaborHolidays - IRRFLaborHolidays;
-
-                    if(LiquidLaborHolidays > 0)
-                    {
-                        Console.WriteLine("Calculation Proportional Labor Holidays Rescisao");
-                        Console.WriteLine("------------------------------------------------");
-                        Console.WriteLine("Months Labor Holidays: " + Months);
-                        if(ProportionalDaysMonthExit > 0)
-                        {
-                            Console.WriteLine("Days Labor Holidays month exit: " + DateExit.Day);
-                        }
-                        Console.WriteLine("Labor Holidays: " + (ProportionalDaysMonthExit + ProportionalMonths).ToString("C"));
-                        Console.WriteLine("Add 33% Labor HOlidays: " + (Add33LaborHolidays).ToString("C2"));
-                        Console.WriteLine("BC para impostos: " + (ProportionalDaysMonthExit + ProportionalMonths).ToString("C"));
-                        Console.WriteLine("INSS Labor Holidays: " + (INSSLaborHolidays).ToString("C2"));
-                        Console.WriteLine("IRRF Labor Holidays: " + (IRRFLaborHolidays).ToString("C2"));
-                        Console.WriteLine("Labor Holidays to receive: " + (LiquidLaborHolidays).ToString("C2"));
-                    }
+                    Console.WriteLine("Rescisao Calculation");
+                    Console.WriteLine("------------------------------------------------");
+                    Console.WriteLine("Proportional Salary: " + (ProportionalSalary).ToString("C"));
+                    Console.WriteLine("Labor Holidays: " + (ProportionalDaysMonthExit + ProportionalHolidaysMonths).ToString("C"));
+                    Console.WriteLine("Add 33% Labor Holidays: " + (Add33LaborHolidays).ToString("C2"));
+                    Console.WriteLine("BC para impostos: " + (ProportionalDaysMonthExit + ProportionalHolidaysMonths + ProportionalSalary).ToString("C"));
+                    Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
+                    Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
+                    Console.WriteLine("Rescisao to receive: " + ((ProportionalDaysMonthExit + ProportionalHolidaysMonths + ProportionalSalary) - INSS - IRRF).ToString("C2"));
                 }
             }
         }

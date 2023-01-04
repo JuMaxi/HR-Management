@@ -30,24 +30,24 @@ namespace HR
 
             if (Name.IndexOf(" ") < 0)
             {
-                throw new Exception("The name is not completed. You must fll this place with the Complet Name.");
+                throw new Exception("The name is not completed. You must fill this field with the Complet Name.");
             }
 
             if (Name == " ")
             {
-                throw new Exception("The Name is null. You must fill this place");
+                throw new Exception("The Name is null. You must fill this field.");
             }
             if (Registry == " ")
             {
-                throw new Exception("The Registry is null. For continue, you must fill this place.");
+                throw new Exception("The Registry is null. For continue, you must fill this field.");
             }
             if (CPF == " ")
             {
-                throw new Exception("The CPF is null. For continue, you must fill this place.");
+                throw new Exception("The CPF is null. For continue, you must fill this field.");
             }
             if (MonthlySalary < 0)
             {
-                throw new Exception("The Monthly Salary is null. For continue, you must fill this place with a value bigger than zero.");
+                throw new Exception("The Monthly Salary is null. For continue, you must fill this field with a value bigger than zero.");
             }
 
 
