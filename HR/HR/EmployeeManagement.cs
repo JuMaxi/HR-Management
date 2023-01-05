@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace HR
@@ -103,7 +104,7 @@ namespace HR
             foreach (Employee Line in NewHiredEmployee)
             {
                 //Para verificar se a data de contratacao esta dentro do periodo de pagamento, nao no futuro.
-                if (Line.DateStart.Year <= Competencia.Year)
+                if (Line.DateStart.Year <= Competencia.Year && Line.DateStart.Month <= Competencia.Month)
                 {
                     double Salary = 0;
                     int DaysWorked = 0;
@@ -286,5 +287,6 @@ namespace HR
                 }
             }
         }
+
     }
 }
