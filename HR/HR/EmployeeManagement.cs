@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -103,8 +104,10 @@ namespace HR
 
             foreach (Employee Line in NewHiredEmployee)
             {
+                TimeSpan Compare = Competencia - Line.DateStart;
+
                 //Para verificar se a data de contratacao esta dentro do periodo de pagamento, nao no futuro.
-                if (Line.DateStart.Year <= Competencia.Year && Line.DateStart.Month <= Competencia.Month)
+                if (Compare.Days > 0)
                 {
                     double Salary = 0;
                     int DaysWorked = 0;
@@ -129,6 +132,7 @@ namespace HR
                     Console.WriteLine(" ");
                     Console.WriteLine("Hello, " + Line.Name + ", Number Registry " + Line.Registry + " follow below your salary details: ");
                     Console.WriteLine("Monthly Salary: " + (Line.MonthlySalary).ToString("C2"));
+                    Console.WriteLine("Date Start in this Company: " + Line.DateStart);
                     Console.WriteLine("Worked days in " + Competencia.Month + "/" + Competencia.Year + ": " + DaysWorked);
                     Console.WriteLine("Monthly Salary Proportional Worked Days: " + Salary.ToString("C2"));
                     Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
@@ -204,24 +208,23 @@ namespace HR
 
         public void Calculate13Salary(DateTime Year13)
         {
-            double LiquidSalary13 = 0;
-
             foreach (Employee Line in NewHiredEmployee)
             {
-                if (Year13.Year >= Line.DateStart.Year)
+                TimeSpan Compare = Year13 - Line.DateStart;
+
+                if (Compare.Days > 0)
                 {
                     double Salary13 = 0;
 
-                    if (Year13.Year == Line.DateStart.Year)
+                    if(Compare.Days < 365)
                     {
-                        int ProportionalMonths13 = (Year13.Month - Line.DateStart.Month) + 1;
+                        int Months = ((Compare.Days % 365) / 30) + 1;
 
                         if (Line.DateStart.Day > 15)
                         {
-                            ProportionalMonths13 = ProportionalMonths13 - 1;
+                            Months = Months - 1;
                         }
-
-                        Salary13 = (Line.MonthlySalary / 12) * (ProportionalMonths13);
+                        Salary13 = (Line.MonthlySalary / 12) * Months;
                     }
                     else
                     {
@@ -231,17 +234,13 @@ namespace HR
                     double INSS = Salary13 * 0.07;
                     double IRRF = (Salary13 - INSS) * 0.15;
 
-                    LiquidSalary13 = Salary13 - INSS - IRRF;
-
-                    if (LiquidSalary13 > 0)
-                    {
-                        Console.WriteLine(" ");
-                        Console.WriteLine(Line.Name + " Number Registry: " + Line.Registry + " Your 13 Salary about year " + Year13.Year + " is " + Salary13.ToString("C2") + ", follow below the detailes about the payment: ");
-                        Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
-                        Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
-                        Console.WriteLine("Liquid Salary 13: " + LiquidSalary13.ToString("C2"));
-                        Console.WriteLine(" ");
-                    }
+                    Console.WriteLine(" ");
+                    Console.WriteLine(Line.Name + ", Number Registry: " + Line.Registry + " Your 13 Salary about year " + Year13.Year + " is " + Salary13.ToString("C2") + ", follow below the detailes about the payment: ");
+                    Console.WriteLine("Date Start in this Company: " + Line.DateStart);
+                    Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
+                    Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
+                    Console.WriteLine("Liquid Salary 13: " + (Salary13 - INSS - IRRF).ToString("C2"));
+                    Console.WriteLine(" ");
                 }
             }
         }
