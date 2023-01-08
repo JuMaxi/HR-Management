@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace HR
 {
-    internal class EmployeeManagement
+    public class EmployeeManagement
     {
         List<Employee> NewHiredEmployee = new List<Employee>();
 
@@ -19,6 +19,7 @@ namespace HR
             bool NoAdd = false;
 
             NewEmployee.Validate();
+            NewEmployee.CPFValidate(NewEmployee.CPF);
 
             for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
@@ -70,7 +71,7 @@ namespace HR
             }
         }
 
-        public void FindOldestEmployee()
+        internal void FindOldestEmployee()
         {
             DateTime Oldest = DateTime.Now;
 

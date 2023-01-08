@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
+using Spectre.Console;
 
 namespace HR
 {
@@ -14,6 +15,8 @@ namespace HR
             Menu StartMenu = new Menu();
 
             StartMenu.Options(SecondClass);
+
+
         }
     }
 }
