@@ -19,7 +19,7 @@ namespace HR
             bool NoAdd = false;
 
             NewEmployee.Validate();
-            NewEmployee.CPFValidate(NewEmployee.CPF);
+            NewEmployee.CPFValidate();
 
             for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {

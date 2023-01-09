@@ -50,61 +50,66 @@ namespace HR
                 throw new Exception("The Monthly Salary is null. For continue, you must fill this field with a value bigger than zero.");
             }
         }
-
-        public void CPFValidate(string NumberCPF)
+        public string ToReplace(string CPFReplace)
         {
-            NumberCPF = NumberCPF.Replace(".", "");
-            NumberCPF = NumberCPF.Replace("-", "");
-            int FirstDig = 0;
-            int SecondDig = 0;
-            
+            CPFReplace = CPFReplace.Replace(".", "");
+            CPFReplace = CPFReplace.Replace("-", "");
 
-            for (int Position = 0; Position < (NumberCPF.Length - 1); Position++)
+            return CPFReplace;
+        }
+
+        public int SumDig(int Modify)
+        {
+            int Number = 0;
+
+            for (int Position = 0; Position < ToReplace(CPF).Length - (Modify +1); Position++)
             {
-                char Number = NumberCPF[Position];
-                string teste = Convert.ToString(Number);
-                int teste2 = Convert.ToInt32(teste);
+                int NumberTemp = Convert.ToInt32(Convert.ToString(ToReplace(CPF)[Position]));
 
-                if(Position < 9)
-                {
-                    int Temp = teste2 * ((NumberCPF.Length-1) - Position);
-                    FirstDig = FirstDig + Temp;
-                }
-                if(Position < 10)
-                {
-                    int Temp = teste2 * (NumberCPF.Length - Position);
-                    SecondDig = SecondDig + Temp;
-                }
+                int Temp = NumberTemp * ((ToReplace(CPF).Length - Modify) - Position);
+
+                Number = Number + Temp;
             }
 
-            FirstDig = FirstDig % NumberCPF.Length;
-            if(FirstDig < 2)
+            return Number;
+        }
+
+        public int FindDigit(int Digit)
+        {
+            Digit = Digit % ToReplace(CPF).Length;
+
+            if (Digit < 2)
             {
-                FirstDig= 0;
+                Digit = 0;
             }
             else
             {
-                FirstDig = NumberCPF.Length - FirstDig;
+                Digit = ToReplace(CPF).Length - Digit;
             }
 
-            SecondDig = SecondDig % NumberCPF.Length;
-            if(SecondDig < 2)
-            {
-                SecondDig= 0;
-            }
-            else
-            {
-                SecondDig= NumberCPF.Length - SecondDig;
-            }
+            return Digit;
+        }
 
-            int teste3 = 0;
-            for(int Position = 9; Position < NumberCPF.Length-1; Position++)
+        public void ToCompare(int DigitCompare, int Position)
+        {
+            int Compare = Convert.ToInt32(Convert.ToString(ToReplace(CPF)[Position]));
+
+            if (Compare != DigitCompare)
             {
-                if(FirstDig == NumberCPF[Position] && SecondDig == NumberCPF[Position+1])
-                {
-                    Console.WriteLine("esta tudo certo.");
-                }
+                throw new Exception("This Number CPF is invalid. Employee: " + Name + ".");
             }
+        }
+
+        public void CPFValidate()
+        {
+            int FirstDig = SumDig(1);
+            int SecondDig = SumDig(0);
+
+            FirstDig = FindDigit(FirstDig);
+            SecondDig = FindDigit(SecondDig);
+
+            ToCompare(FirstDig, ToReplace(CPF).Length - 2);
+            ToCompare(SecondDig, ToReplace(CPF).Length - 1);
         }
 
 
@@ -115,3 +120,4 @@ namespace HR
 
     }
 }
+
