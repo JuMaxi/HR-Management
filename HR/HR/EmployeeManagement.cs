@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spectre.Console.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -27,9 +28,7 @@ namespace HR
                 {
                     NoAdd = true;
 
-                    Console.WriteLine(" ");
                     Console.WriteLine("This Employee, Registry Number " + NewEmployee.Registry + " have already been hired. For this reason, your Add was not completed.");
-                    Console.WriteLine(" ");
                 }
             }
             if (NoAdd == false)
@@ -48,24 +47,17 @@ namespace HR
 
         public void ShowBirthdayCompany()
         {
-            DateTime Now = DateTime.Now;
-            DateTime Now15Days = Now.AddDays(15);
-
             for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
-                Employee Birthday = NewHiredEmployee[Position];
-                DateTime DateBegin = Birthday.DateStart;
-                int YearsAdd = Now15Days.Year - DateBegin.Year;
+                TimeSpan Difference = DateTime.Now - NewHiredEmployee[Position].DateStart;
 
-                if (YearsAdd > 0)
+                if (Difference.Days >= 365)
                 {
-                    DateBegin = DateBegin.AddYears(YearsAdd);
-
-                    if (DateBegin >= Now && DateBegin <= Now15Days)
+                    if (NewHiredEmployee[Position].DateStart.Month == DateTime.Now.Month
+                        && NewHiredEmployee[Position].DateStart.Day <= DateTime.Now.AddDays(15).Day)
                     {
-                        Console.WriteLine(" ");
                         Console.WriteLine("Congratulations!!! " + NewHiredEmployee[Position].Name + " Now you are having 1 year with us! We hope to have a lot more years together!");
-                        Console.WriteLine(" ");
+
                     }
                 }
             }
@@ -101,8 +93,6 @@ namespace HR
 
         public void CalculateSalary(DateTime Competencia)
         {
-            int DaysMonth = System.DateTime.DaysInMonth(Competencia.Year, Competencia.Month);
-
             foreach (Employee Line in NewHiredEmployee)
             {
                 TimeSpan Compare = Competencia - Line.DateStart;
@@ -116,21 +106,18 @@ namespace HR
                     //Para verificar se o funcionario foi contratado no mesmo mes e ano da competencia de pagamento e em caso positivo, calcular o salario proporcional
                     if (Line.DateStart.Month == Competencia.Month && Line.DateStart.Year == Competencia.Year)
                     {
-                        DaysWorked = ((DaysMonth - Line.DateStart.Day) + 1);
-                        Salary = (Line.MonthlySalary / DaysMonth) * DaysWorked;
+                        DaysWorked = ((System.DateTime.DaysInMonth(Competencia.Year, Competencia.Month) - Line.DateStart.Day) + 1);
+                        Salary = (Line.MonthlySalary / System.DateTime.DaysInMonth(Competencia.Year, Competencia.Month)) * DaysWorked;
                     }
                     else
                     {
-                        DaysWorked = DaysMonth;
+                        DaysWorked = System.DateTime.DaysInMonth(Competencia.Year, Competencia.Month);
                         Salary = Line.MonthlySalary;
                     }
 
                     double INSS = Salary * 0.07;
                     double IRRF = (Salary - INSS) * 0.15;
 
-                    double LiquidSalary = Salary - INSS - IRRF;
-
-                    Console.WriteLine(" ");
                     Console.WriteLine("Hello, " + Line.Name + ", Number Registry " + Line.Registry + " follow below your salary details: ");
                     Console.WriteLine("Monthly Salary: " + (Line.MonthlySalary).ToString("C2"));
                     Console.WriteLine("Date Start in this Company: " + Line.DateStart);
@@ -138,75 +125,76 @@ namespace HR
                     Console.WriteLine("Monthly Salary Proportional Worked Days: " + Salary.ToString("C2"));
                     Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
                     Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
-                    Console.WriteLine("Liquid Salary: " + LiquidSalary.ToString("C2"));
-                    Console.WriteLine(" ");
+                    Console.WriteLine("Liquid Salary: " + (Salary - INSS - IRRF).ToString("C2"));
                 }
             }
         }
-        public void DismissEmployee(string Registry)
+
+        public int CheckRegistry(string Registry)
         {
-            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
+            int Position;
+
+            for (Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
                 if (NewHiredEmployee[Position].Registry == Registry)
                 {
-                    Console.WriteLine(" ");
-                    Console.WriteLine("The Employee " + NewHiredEmployee[Position].Name + " Registry Number: " + NewHiredEmployee[Position].Registry + " was Dismiss.");
-                    Console.WriteLine(" ");
-
-                    NewHiredEmployee.Remove(NewHiredEmployee[Position]);
+                    return Position;
                 }
             }
+            return Position;
+        }
+        public void DismissEmployee(string Registry)
+        {
+            Console.WriteLine("The Employee " + NewHiredEmployee[CheckRegistry(Registry)].Name + " Registry Number: " + NewHiredEmployee[CheckRegistry(Registry)].Registry + " was Dismiss.");
+
+            NewHiredEmployee.Remove(NewHiredEmployee[CheckRegistry(Registry)]);
         }
 
+        public double CalculatePercentage(double Percentage, int Position)
+        {
+            DateTime Year = new DateTime(2022, 12, 31);
+            TimeSpan Difference = Year - NewHiredEmployee[Position].DateStart;
+            double ProportionalPercentage = 0;
+
+            if (Difference.Days < 365)
+            {
+                if (Difference.Days < 30)
+                {
+                    ProportionalPercentage = Percentage / 12;
+                }
+                else
+                {
+                    if (Difference.Days % 30 != 0)
+                    {
+                        ProportionalPercentage = (Percentage / 12) * ((Difference.Days / 30) + 1);
+                    }
+                    else
+                    {
+                        ProportionalPercentage = (Percentage / 12) * (Difference.Days / 30);
+                    }
+                }
+                return ProportionalPercentage;
+            }
+            else
+            {
+                return Percentage;
+            }
+        }
         public void PromoteEmployee(string Registry, double Percentage)
         {
-            foreach (Employee Line in NewHiredEmployee)
-            {
-                if (Line.Registry == Registry)
-                {
-                    double Promote = (Line.MonthlySalary) * Percentage;
-                    Line.MonthlySalary = Line.MonthlySalary + Promote;
-                }
-            }
+            double Promote = ((NewHiredEmployee[CheckRegistry(Registry)]).MonthlySalary) * Percentage;
+            NewHiredEmployee[CheckRegistry(Registry)].MonthlySalary = (NewHiredEmployee[CheckRegistry(Registry)].MonthlySalary) + Promote;
+
         }
 
         public void UnionAgreement(double Percentage)
         {
-            foreach (Employee Line in NewHiredEmployee)
+            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
-                DateTime YearAgreement = new DateTime(2022, 12, 31);
-                TimeSpan Time = YearAgreement - Line.DateStart;
-
-                if (Time.Days < 365)
-                {
-                    double ProportionalPercentage = 0;
-
-                    if (Time.Days < 30)
-                    {
-                        ProportionalPercentage = Percentage / 12;
-                    }
-                    else
-                    {
-                        if (Time.Days % 30 != 0)
-                        {
-                            ProportionalPercentage = (Percentage / 12) * ((Time.Days / 30) + 1);
-                        }
-                        else
-                        {
-                            ProportionalPercentage = (Percentage / 12) * (Time.Days / 30);
-                        }
-                    }
-
-                    PromoteEmployee(Line.Registry, ProportionalPercentage);
-                }
-
-                else
-                {
-                    PromoteEmployee(Line.Registry, Percentage);
-                }
+                double Percentage2 = CalculatePercentage(Percentage, Position);
+                PromoteEmployee(NewHiredEmployee[Position].Registry, Percentage2);
             }
         }
-
         public void Calculate13Salary(DateTime Year13)
         {
             foreach (Employee Line in NewHiredEmployee)
@@ -217,7 +205,7 @@ namespace HR
                 {
                     double Salary13 = 0;
 
-                    if(Compare.Days < 365)
+                    if (Compare.Days < 365)
                     {
                         int Months = ((Compare.Days % 365) / 30) + 1;
 
@@ -248,44 +236,39 @@ namespace HR
 
         public void Rescisao(string NumberRegistry, DateTime DateExit)
         {
-            foreach (Employee Line in NewHiredEmployee)
+            //PROPORCIONAL CALCULO FERIAS;
+            TimeSpan Time = DateExit - NewHiredEmployee[CheckRegistry(NumberRegistry)].DateStart;
+
+            int Months = (Time.Days % 365) / 30;
+
+            if (NewHiredEmployee[CheckRegistry(NumberRegistry)].DateStart.Day < 15)
             {
-                if (NumberRegistry == Line.Registry)
-                {
-                    //PROPORCIONAL CALCULO FERIAS;
-                    TimeSpan Time = DateExit - Line.DateStart;
-
-                    int Months = (Time.Days % 365) / 30;
-
-                    if (Line.DateStart.Day < 15)
-                    {
-                        Months = Months + 1;
-                    }
-                    double RescisaoHolidaysMonths = (Line.MonthlySalary / 12) * Months;
-
-                    //SALARIO (SE DATA DE SAIDA APOS DIA 15);
-                    double RescisaoSalary = 0;
-
-                    if (DateExit.Day > 15)
-                    {
-                        RescisaoSalary = Line.MonthlySalary;
-                    }
-
-                    //Impostos s/ LaborHolidays + Proportional Salary;
-                    double INSS = (RescisaoHolidaysMonths + RescisaoSalary) * 0.07;
-                    double IRRF = ((RescisaoHolidaysMonths + RescisaoSalary) - INSS) * 0.15;
-
-                    Console.WriteLine("Rescisao Calculation");
-                    Console.WriteLine("------------------------------------------------");
-                    Console.WriteLine("Proportional Salary: " + (RescisaoSalary).ToString("C"));
-                    Console.WriteLine("Labor Holidays: " + (RescisaoHolidaysMonths).ToString("C"));
-                    Console.WriteLine("Add 33% Labor Holidays: " + (RescisaoHolidaysMonths * 0.33).ToString("C2"));
-                    Console.WriteLine("BC para impostos: " + (RescisaoHolidaysMonths + RescisaoSalary).ToString("C"));
-                    Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
-                    Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
-                    Console.WriteLine("Rescisao to receive: " + ((RescisaoHolidaysMonths + RescisaoSalary) - INSS - IRRF).ToString("C2"));
-                }
+                Months = Months + 1;
             }
+            double RescisaoHolidaysMonths = ((NewHiredEmployee[CheckRegistry(NumberRegistry)].MonthlySalary) / 12) * Months;
+
+            //SALARIO (SE DATA DE SAIDA APOS DIA 15);
+            double RescisaoSalary = 0;
+
+            if (DateExit.Day > 15)
+            {
+                RescisaoSalary = NewHiredEmployee[CheckRegistry(NumberRegistry)].MonthlySalary;
+            }
+
+            //Impostos s/ LaborHolidays + Proportional Salary;
+            double INSS = (RescisaoHolidaysMonths + RescisaoSalary) * 0.07;
+            double IRRF = ((RescisaoHolidaysMonths + RescisaoSalary) - INSS) * 0.15;
+
+            Console.WriteLine("Rescisao Calculation");
+            Console.WriteLine("------------------------------------------------");
+            Console.WriteLine("Proportional Salary: " + (RescisaoSalary).ToString("C"));
+            Console.WriteLine("Labor Holidays: " + (RescisaoHolidaysMonths).ToString("C"));
+            Console.WriteLine("Add 33% Labor Holidays: " + (RescisaoHolidaysMonths * 0.33).ToString("C2"));
+            Console.WriteLine("BC para impostos: " + (RescisaoHolidaysMonths + RescisaoSalary).ToString("C"));
+            Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
+            Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
+            Console.WriteLine("Rescisao to receive: " + ((RescisaoHolidaysMonths + RescisaoSalary) - INSS - IRRF).ToString("C2"));
+
         }
 
     }

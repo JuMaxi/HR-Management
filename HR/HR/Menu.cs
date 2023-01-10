@@ -175,6 +175,7 @@ namespace HR
                     AccessClassEM.DismissEmployee(Registry);
 
                     ExitMessage();
+                
                 }
                 if(Option == "8") 
                 {
