@@ -79,55 +79,53 @@ namespace HR
             {
                 if (Oldest == Line.DateStart)
                 {
-                    DateTime Today = DateTime.Now;
-                    int Year = Today.Year - Line.DateStart.Year;
-                    int Month = Today.Month - Line.DateStart.Month;
-                    int Day = Today.Day - Line.DateStart.Day;
-
-                    Console.WriteLine(" ");
-                    Console.WriteLine(Line.Name + " you are the oldest employee in this company. You have been with us since " + Line.DateStart.ToString("dd/MM/yyyy") + " for this reason your total time working here is " + Year + " year(s) " + Month + " month(s) and " + Day + " day(s). We Hope you continue with us for a long time!");
-                    Console.WriteLine(" ");
+                    Console.WriteLine(Line.Name + " you are the oldest employee in this company. You have been with us since " + Line.DateStart.ToString("dd/MM/yyyy") + " for this reason your total time working here is " + (DateTime.Now.Year - Line.DateStart.Year) + " year(s) " + (DateTime.Now.Month - Line.DateStart.Month) + " month(s) and " + (DateTime.Now.Day - Line.DateStart.Day) + " day(s). We Hope you continue with us for a long time!");
                 }
             }
         }
 
-        public void CalculateSalary(DateTime Competencia)
+        public double SalaryDue(DateTime MonthPayment, int TrueorFalse)
         {
-            foreach (Employee Line in NewHiredEmployee)
+            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
-                TimeSpan Compare = Competencia - Line.DateStart;
+                TimeSpan Compare = MonthPayment - NewHiredEmployee[Position].DateStart;
 
                 //Para verificar se a data de contratacao esta dentro do periodo de pagamento, nao no futuro.
                 if (Compare.Days > 0)
                 {
-                    double Salary = 0;
-                    int DaysWorked = 0;
-
-                    //Para verificar se o funcionario foi contratado no mesmo mes e ano da competencia de pagamento e em caso positivo, calcular o salario proporcional
-                    if (Line.DateStart.Month == Competencia.Month && Line.DateStart.Year == Competencia.Year)
+                    //Para verificar se o funcionario esta a menos de um ano na empresa.
+                    if (Compare.Days < 365)
                     {
-                        DaysWorked = ((System.DateTime.DaysInMonth(Competencia.Year, Competencia.Month) - Line.DateStart.Day) + 1);
-                        Salary = (Line.MonthlySalary / System.DateTime.DaysInMonth(Competencia.Year, Competencia.Month)) * DaysWorked;
+                        if (TrueorFalse == 1)
+                        {
+                            NewHiredEmployee[Position].MonthlySalary = (NewHiredEmployee[Position].MonthlySalary / 365) * Compare.Days; /*13salary*/
+                        }
+                        else
+                        {
+                            if (NewHiredEmployee[Position].DateStart.Month != MonthPayment.Month)
+                            {
+                                NewHiredEmployee[Position].MonthlySalary = NewHiredEmployee[Position].MonthlySalary;
+                            }
+                            else
+                            {
+                                NewHiredEmployee[Position].MonthlySalary = (NewHiredEmployee[Position].MonthlySalary / DateTime.DaysInMonth(MonthPayment.Year, MonthPayment.Month)) * (DateTime.DaysInMonth(MonthPayment.Year, MonthPayment.Month) - NewHiredEmployee[Position].DateStart.Day + 1);//Monthy Salary Proportional
+                            }
+                        }
                     }
                     else
                     {
-                        DaysWorked = System.DateTime.DaysInMonth(Competencia.Year, Competencia.Month);
-                        Salary = Line.MonthlySalary;
+                        NewHiredEmployee[Position].MonthlySalary = NewHiredEmployee[Position].MonthlySalary;
                     }
-
-                    double INSS = Salary * 0.07;
-                    double IRRF = (Salary - INSS) * 0.15;
-
-                    Console.WriteLine("Hello, " + Line.Name + ", Number Registry " + Line.Registry + " follow below your salary details: ");
-                    Console.WriteLine("Monthly Salary: " + (Line.MonthlySalary).ToString("C2"));
-                    Console.WriteLine("Date Start in this Company: " + Line.DateStart);
-                    Console.WriteLine("Worked days in " + Competencia.Month + "/" + Competencia.Year + ": " + DaysWorked);
-                    Console.WriteLine("Monthly Salary Proportional Worked Days: " + Salary.ToString("C2"));
-                    Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
-                    Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
-                    Console.WriteLine("Liquid Salary: " + (Salary - INSS - IRRF).ToString("C2"));
                 }
+                return NewHiredEmployee[Position].MonthlySalary;
             }
+            return 0;
+        }
+        public void CalculateSalary(DateTime Competencia)
+        {
+            int TrueorFalse = 0;
+            SalaryDue(Competencia, TrueorFalse);
+           
         }
 
         public int CheckRegistry(string Registry)
