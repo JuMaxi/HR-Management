@@ -13,6 +13,7 @@ namespace HR
         public string CPF;
         public DateTime DateStart;
         public double MonthlySalary;
+        
 
         public void Initialize(string NameEmployee, string NumberRegistry, string NumberCPF, DateTime Date, double Salary)
         {

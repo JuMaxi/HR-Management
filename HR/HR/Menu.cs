@@ -203,7 +203,12 @@ namespace HR
                     string PercentageString = Console.ReadLine();
                     double Percentage = Convert.ToDouble(PercentageString);
 
-                    AccessClassEM.UnionAgreement(Percentage);
+                    Console.Write("Please, type the Union Agreement Date (YYYY/MM/DD): ");
+                    string DateString = Console.ReadLine();
+                    DateTime DateAgreement = Convert.ToDateTime(DateString);
+
+
+                    AccessClassEM.UnionAgreement(Percentage, DateAgreement);
 
                     Console.WriteLine(" ");
                     Console.WriteLine("The Union Agreement was completed with successfull.");
