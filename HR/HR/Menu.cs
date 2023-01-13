@@ -69,7 +69,7 @@ namespace HR
                     AccessClassE.Registry = Console.ReadLine();
 
                     Console.Write("Please, type the CPF: ");
-                    AccessClassE.CPF = Console.ReadLine();
+                    string CPF = Console.ReadLine();
 
                     Console.Write("Please, type the Start Date (YYYY/MM/DD): ");
                     string DateString = Console.ReadLine();
@@ -79,10 +79,9 @@ namespace HR
                     string SalaryString = Console.ReadLine();
                     AccessClassE.MonthlySalary = Convert.ToDouble(SalaryString);
 
-                    AccessClassE.Initialize(AccessClassE.Name, AccessClassE.Registry, AccessClassE.CPF, AccessClassE.DateStart, AccessClassE.MonthlySalary);
-
                     try
                     {
+                        AccessClassE.Initialize(AccessClassE.Name, AccessClassE.Registry, CPF, AccessClassE.DateStart, AccessClassE.MonthlySalary);
                         AccessClassEM.AddEmployee(AccessClassE);
                     }
                     catch (Exception ex)

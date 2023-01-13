@@ -15,8 +15,6 @@ namespace HR
             Menu StartMenu = new Menu();
 
             StartMenu.Options(SecondClass);
-
-
         }
     }
 }

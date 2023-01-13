@@ -21,7 +21,6 @@ namespace HR
             bool NoAdd = false;
 
             NewEmployee.Validate();
-            NewEmployee.CPFValidate();
 
             for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
@@ -42,7 +41,7 @@ namespace HR
         {
             foreach (Employee Line in NewHiredEmployee)
             {
-                Console.WriteLine("Employee Name: " + Line.Name + "\t CPF: " + Line.CPF + "\t Registry: " + Line.Registry + "\t Date Start: " + Line.DateStart.ToString("dd/MM/yyyy") + "\t Salary: " + Line.MonthlySalary.ToString("C2"));
+                Console.WriteLine("Employee Name: " + Line.Name + "\t CPF: " + Line.NumberEmployee.Number + "\t Registry: " + Line.Registry + "\t Date Start: " + Line.DateStart.ToString("dd/MM/yyyy") + "\t Salary: " + Line.MonthlySalary.ToString("C2"));
             }
         }
 
@@ -136,7 +135,6 @@ namespace HR
             }
             return null;
         }
-
 
         public void PromoteEmployee(string Registry, double Percentage)
         {
