@@ -16,6 +16,8 @@ namespace HR
         List<Employee> NewHiredEmployee = new List<Employee>();
         List<Employee> RemovedEmployee = new List<Employee>();
 
+        public Calculate Calculate = new Calculate();
+
         public void AddEmployee(Employee NewEmployee)
         {
             bool NoAdd = false;
@@ -84,58 +86,7 @@ namespace HR
             }
         }
 
-        public void CalculateTax(double Salary, Employee Line)
-        {
-            if (Salary > 0)
-            {
-                double INSS = Salary * 0.07;
-                double IRRF = (Salary - INSS) * 0.15;
-
-                Console.WriteLine(" ");
-                Console.WriteLine("Hello, " + Line.Name + ", Number Registry " + Line.Registry + " here are your salary details: ");
-                Console.WriteLine("Monthly Salary: " + (Salary).ToString("C2"));
-                Console.WriteLine("Date Start in this Company: " + Line.DateStart.ToString("yyyy/MM/dd"));
-                Console.WriteLine("INSS: " + (-INSS).ToString("C2"));
-                Console.WriteLine("IRRF: " + (-IRRF).ToString("C2"));
-                Console.WriteLine("Liquid Salary: " + (Salary - INSS - IRRF).ToString("C2"));
-                Console.WriteLine(" ");
-            }
-        }
-
-        public void CalculateSalary(DateTime Competencia)
-        {
-            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
-            {
-                Employee Line = NewHiredEmployee[Position];
-                double Salary = Line.MonthlySalary;
-
-                if (Competencia > Line.DateStart)
-                {
-                    if (Competencia.Year == Line.DateStart.Year)
-                    {
-                        if (Competencia.Month == Line.DateStart.Month)
-                        {
-                            int DaysMonth = DateTime.DaysInMonth(Competencia.Year, Competencia.Month);
-                            Salary = (Line.MonthlySalary / DaysMonth) * ((DaysMonth - Line.DateStart.Day) + 1);
-                        }
-                    }
-                }
-                CalculateTax(Salary, Line);
-            }
-        }
-
-        public Employee CheckRegistry(string Registry)
-        {
-            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
-            {
-                if (NewHiredEmployee[Position].Registry == Registry)
-                {
-                    return NewHiredEmployee[Position];
-                }
-            }
-            return null;
-        }
-
+       
         public void PromoteEmployee(string Registry, double Percentage)
         {
             Employee Employee = CheckRegistry(Registry);
@@ -167,6 +118,56 @@ namespace HR
                 }
             }
         }
+       
+        public void DismissEmployee(string Registry)
+        {
+            Employee EmployeeRescisao = CheckRegistry(Registry);
+
+            RemovedEmployee.Add(EmployeeRescisao);
+
+            NewHiredEmployee.Remove(EmployeeRescisao);
+
+            Console.WriteLine("The Employee " + EmployeeRescisao.Name + " Registry Number: " + EmployeeRescisao.Registry + " was Dismiss.");
+
+        }
+
+        
+
+        public void CalculateSalary(DateTime Competencia)
+        {
+
+            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
+            {
+                Employee Line = NewHiredEmployee[Position];
+                double Salary = Line.MonthlySalary;
+
+                if (Competencia > Line.DateStart)
+                {
+                    if (Competencia.Year == Line.DateStart.Year)
+                    {
+                        if (Competencia.Month == Line.DateStart.Month)
+                        {
+                            int DaysMonth = DateTime.DaysInMonth(Competencia.Year, Competencia.Month);
+                            Salary = (Line.MonthlySalary / DaysMonth) * ((DaysMonth - Line.DateStart.Day) + 1);
+                        }
+                    }
+                }
+                Calculate.CalculateTax(Salary, Line);
+            }
+        }
+
+        public Employee CheckRegistry(string Registry)
+        {
+            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
+            {
+                if (NewHiredEmployee[Position].Registry == Registry)
+                {
+                    return NewHiredEmployee[Position];
+                }
+            }
+            return null;
+        }
+
         public void Calculate13Salary(DateTime Year13)
         {
             for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
@@ -184,7 +185,7 @@ namespace HR
                     }
 
                 }
-                CalculateTax(Salary, NewHiredEmployee[Position]);
+                Calculate.CalculateTax(Salary, NewHiredEmployee[Position]);
             }
         }
 
@@ -227,22 +228,10 @@ namespace HR
                     }
                     Console.WriteLine("");
                     Console.WriteLine("Rescisao Calculation");
-                    CalculateTax((HolidaysRescisao + SalaryRescisao + (HolidaysRescisao * 0.33)), EmployeeRescisao);
+                    Calculate.CalculateTax((HolidaysRescisao + SalaryRescisao + (HolidaysRescisao * 0.33)), EmployeeRescisao);
                 }
 
             }
         }
-        public void DismissEmployee(string Registry)
-        {
-            Employee EmployeeRescisao = CheckRegistry(Registry);
-
-            RemovedEmployee.Add(EmployeeRescisao);
-
-            NewHiredEmployee.Remove(EmployeeRescisao);
-
-            Console.WriteLine("The Employee " + EmployeeRescisao.Name + " Registry Number: " + EmployeeRescisao.Registry + " was Dismiss.");
-
-        }
-
     }
 }

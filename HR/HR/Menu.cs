@@ -111,11 +111,11 @@ namespace HR
                         double Salary = Convert.ToDouble(SalaryReplace);
 
                         Employee AccessClassE = new Employee();
-                        AccessClassE.Initialize(Break[0], Break[1], Break[2], Date, Salary);
 
                         //Part 14
                         try
                         {
+                            AccessClassE.Initialize(Break[0], Break[1], Break[2], Date, Salary);
                             AccessClassEM.AddEmployee(AccessClassE);
                         }
                         catch (Exception ex)
