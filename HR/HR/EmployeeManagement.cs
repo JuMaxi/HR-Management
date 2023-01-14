@@ -15,7 +15,6 @@ namespace HR
     {
         List<Employee> NewHiredEmployee = new List<Employee>();
         List<Employee> RemovedEmployee = new List<Employee>();
-
         public Calculate Calculate = new Calculate();
 
         public void AddEmployee(Employee NewEmployee)
@@ -131,29 +130,9 @@ namespace HR
 
         }
 
-        
-
         public void CalculateSalary(DateTime Competencia)
         {
-
-            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
-            {
-                Employee Line = NewHiredEmployee[Position];
-                double Salary = Line.MonthlySalary;
-
-                if (Competencia > Line.DateStart)
-                {
-                    if (Competencia.Year == Line.DateStart.Year)
-                    {
-                        if (Competencia.Month == Line.DateStart.Month)
-                        {
-                            int DaysMonth = DateTime.DaysInMonth(Competencia.Year, Competencia.Month);
-                            Salary = (Line.MonthlySalary / DaysMonth) * ((DaysMonth - Line.DateStart.Day) + 1);
-                        }
-                    }
-                }
-                Calculate.CalculateTax(Salary, Line);
-            }
+            Calculate.CalculateSalary(Competencia, NewHiredEmployee);
         }
 
         public Employee CheckRegistry(string Registry)
@@ -170,68 +149,12 @@ namespace HR
 
         public void Calculate13Salary(DateTime Year13)
         {
-            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
-            {
-                double Salary = 0;
-                if (Year13 > NewHiredEmployee[Position].DateStart)
-                {
-                    if (Year13.Year == NewHiredEmployee[Position].DateStart.Year)
-                    {
-                        Salary = CalculateSalaryProportional(NewHiredEmployee[Position], Year13);
-                    }
-                    else
-                    {
-                        Salary = NewHiredEmployee[Position].MonthlySalary;
-                    }
-
-                }
-                Calculate.CalculateTax(Salary, NewHiredEmployee[Position]);
-            }
+            Calculate.Calculate13Salary(Year13, NewHiredEmployee);
         }
 
-        public double CalculateSalaryProportional(Employee EmployeeProportional, DateTime Date)
-        {
-            TimeSpan DaysTotal = Date - EmployeeProportional.DateStart;
-            int DaysActualYear = (DaysTotal.Days % 365) + 1;
-            double Salary = 0;
-
-            if (DaysTotal.Days < 365 && EmployeeProportional.DateStart.Day > 15)
-            {
-                int DaysMonthStart = DateTime.DaysInMonth(EmployeeProportional.DateStart.Year, EmployeeProportional.DateStart.Month);
-                Salary = ((EmployeeProportional.MonthlySalary / 365) * (DaysActualYear - DaysMonthStart));
-
-                if (Salary < 0)
-                {
-                    Salary = 0;
-                }
-            }
-            else
-            {
-                Salary = (EmployeeProportional.MonthlySalary / 365) * DaysActualYear;
-            }
-            return Salary;
-        }
         public void Rescisao(string NumberRegistry, DateTime DateExit)
         {
-            //PROPORCIONAL CALCULO FERIAS;
-
-            foreach (Employee EmployeeRescisao in RemovedEmployee)
-            {
-                if (NumberRegistry == EmployeeRescisao.Registry)
-                {
-                    double SalaryRescisao = 0;
-                    double HolidaysRescisao = CalculateSalaryProportional(EmployeeRescisao, DateExit);
-
-                    if (DateExit.Day > 15)
-                    {
-                        SalaryRescisao = EmployeeRescisao.MonthlySalary;
-                    }
-                    Console.WriteLine("");
-                    Console.WriteLine("Rescisao Calculation");
-                    Calculate.CalculateTax((HolidaysRescisao + SalaryRescisao + (HolidaysRescisao * 0.33)), EmployeeRescisao);
-                }
-
-            }
+            Calculate.Rescisao(NumberRegistry, DateExit, RemovedEmployee);
         }
     }
 }
