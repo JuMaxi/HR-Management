@@ -10,11 +10,9 @@ namespace HR
     {
         static void Main(string[] args)
         {
-            EmployeeManagement SecondClass = new EmployeeManagement();
+            SelectionKindOfManagement SelectionMenu = new SelectionKindOfManagement();
 
-            Menu StartMenu = new Menu();
-
-            StartMenu.Options(SecondClass);
+            SelectionMenu.ChooseKindMenu();
         }
     }
 }

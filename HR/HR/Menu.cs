@@ -7,7 +7,7 @@ using System.IO;
 
 namespace HR
 {
-    internal class Menu
+    public class Menu
     {
         public void WriteNameCompany()
         {
