@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spectre.Console.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,27 +9,21 @@ namespace HR
 {
     public class GateManagement
     {
-        List<People> AddPeople = new List<People>();
+        Dictionary<string, People> AddPeople = new Dictionary<string, People>();
 
         public void AddVisitor(People NewPerson)
         {
-            AddPeople.Add(NewPerson);
+            AddPeople.Add(NewPerson.NumberCPF.Number,NewPerson);
         }
         public void CheckAccess(string CPF)
         {
-            for (int Position = 0; Position < AddPeople.Count; Position++)
+            if (AddPeople.ContainsKey(CPF))
             {
-                CPF CallCPF = new CPF(CPF);
-
-                if (CallCPF.Number == AddPeople[Position].NumberCPF.Number)
-                {
-                    Console.WriteLine("Access permitted to " + AddPeople[Position].Name);
-                    Position = AddPeople.Count;
-                }
-                else
-                {
-                    Console.WriteLine("Access denied to CPF number " + CallCPF);
-                }
+                Console.WriteLine("Access permitted to " + AddPeople[CPF].Name);
+            }
+            else
+            {
+                Console.WriteLine("Access denied to CPF number " + CPF);
             }
         }
     }
