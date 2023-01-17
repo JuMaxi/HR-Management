@@ -24,7 +24,6 @@ namespace HR
                 Console.WriteLine("Liquid Salary: " + (Salary - INSS - IRRF).ToString("C2"));
                 Console.WriteLine(" ");
             }
-
         }
 
         public void CalculateSalary(DateTime Competencia, List<Employee> Employees)

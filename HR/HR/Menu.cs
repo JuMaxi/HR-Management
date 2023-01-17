@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Spectre.Console.Rendering;
+using System.Globalization;
 
 namespace HR
 {
@@ -23,17 +25,16 @@ namespace HR
             Console.WriteLine(" ");
 
             Console.WriteLine("1) Create Employee: ");
-            Console.WriteLine("2) Add Employee(File Read): ");
-            Console.WriteLine("3) List Employee: ");
-            Console.WriteLine("4) Show Birthday Company: ");
-            Console.WriteLine("5) Find Oldest Employee: ");
-            Console.WriteLine("6) Calculate Salary: ");
-            Console.WriteLine("7) Dismiss Employee: ");
-            Console.WriteLine("8) Promote Employee: ");
-            Console.WriteLine("9) Union Agreement: ");
-            Console.WriteLine("10) Calculate 13 Salary: ");
-            Console.WriteLine("11) Rescisao: ");
-            Console.WriteLine("12) Exit: ");
+            Console.WriteLine("2) List Employee: ");
+            Console.WriteLine("3) Show Birthday Company: ");
+            Console.WriteLine("4) Find Oldest Employee: ");
+            Console.WriteLine("5) Calculate Salary: ");
+            Console.WriteLine("6) Dismiss Employee: ");
+            Console.WriteLine("7) Promote Employee: ");
+            Console.WriteLine("8) Union Agreement: ");
+            Console.WriteLine("9) Calculate 13 Salary: ");
+            Console.WriteLine("10) Rescisao: ");
+            Console.WriteLine("11) Exit: ");
             Console.Write("--> ");
         }
 
@@ -44,15 +45,69 @@ namespace HR
             Console.ReadKey();
             Console.Clear();
         }
+        public void WriteFile(List<Employee> Employees)
+        {
+            string Path = @"C:\Dev\RH\HR\HR\database.csv";
+            List<string> ListLineActual = new List<string>();
+
+            foreach (Employee Line in Employees)
+            {
+                string LineActual = Line.Name + ";" + Line.Registry + ";" + Line.NumberEmployee.Number + ";" + Line.DateStart.ToString("yyyy-MM-dd") + ";" + Line.MonthlySalary.ToString("N2", CultureInfo.GetCultureInfo("pt-BR"));
+
+                ListLineActual.Add(LineActual);
+            }
+            File.WriteAllLines(Path, ListLineActual);
+        }
+        public void ReadFile(EmployeeManagement AccessClassEM)
+        {
+            string Path = @"C:\Dev\RH\HR\HR\database.csv";
+
+            if (File.Exists(Path))
+            {
+                string[] Read = File.ReadAllLines(Path);
+
+                for (int Position = 1; Position < Read.Length; Position++)
+                {
+                    string[] Break = Read[Position].Split(";");
+
+                    string DateReplace = Break[3];
+                    DateReplace = DateReplace.Replace('-', '/');
+                    DateTime Date = Convert.ToDateTime(DateReplace);
+
+                    string SalaryReplace = Break[4];
+                    SalaryReplace = SalaryReplace.Replace(".", "");
+                    SalaryReplace = SalaryReplace.Replace(',', '.');
+                    double Salary = Convert.ToDouble(SalaryReplace);
+
+                    Employee AccessClassE = new Employee();
+
+                    //Part 14
+                    try
+                    {
+                        AccessClassE.Initialize(Break[0], Break[1], Break[2], Date, Salary);
+                        AccessClassEM.AddEmployee(AccessClassE);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Something is wrong. Check the error message, please. " + ex.Message);
+                        Console.WriteLine(" ");
+                    }
+                }
+            }
+        }
+
+
         public void Options(EmployeeManagement AccessClassEM)
         {
-            string Option = "0";
+            bool Exit = false;
 
-            while (Option != "12")
+            ReadFile(AccessClassEM);
+
+            while (Exit == false)
             {
                 WriteOptions();
 
-                Option = Console.ReadLine();
+                string Option = Console.ReadLine();
 
                 Console.Clear();
 
@@ -92,43 +147,7 @@ namespace HR
 
                     ExitMessage();
                 }
-                if(Option == "2")
-                {
-                    string Path = @"C:\Dev\RH\HR\HR\Employees2.csv";
-                    string[] Read = File.ReadAllLines(Path);
-
-                    for (int Position = 1; Position < Read.Length; Position++)
-                    {
-                        string[] Break = Read[Position].Split(";");
-                        
-                        string DateReplace = Break[3];
-                        DateReplace = DateReplace.Replace('-', '/');
-                        DateTime Date = Convert.ToDateTime(DateReplace);
-
-                        string SalaryReplace = Break[4];
-                        SalaryReplace = SalaryReplace.Replace(".", "");
-                        SalaryReplace = SalaryReplace.Replace(',', '.');
-                        double Salary = Convert.ToDouble(SalaryReplace);
-
-                        Employee AccessClassE = new Employee();
-
-                        //Part 14
-                        try
-                        {
-                            AccessClassE.Initialize(Break[0], Break[1], Break[2], Date, Salary);
-                            AccessClassEM.AddEmployee(AccessClassE);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("Something is wrong. Check the error message, please. " + ex.Message);
-                            Console.WriteLine(" ");
-                        }
-                    }
-
-                    Console.WriteLine("The File was Read and the valid Employees were incluid in the List Employee.");
-                    ExitMessage();
-                }
-                if(Option == "3")
+                if (Option == "2")
                 {
                     WriteNameCompany();
 
@@ -136,7 +155,7 @@ namespace HR
 
                     ExitMessage();
                 }
-                if (Option == "4")
+                if (Option == "3")
                 {
                     WriteNameCompany();
 
@@ -144,15 +163,15 @@ namespace HR
 
                     ExitMessage();
                 }
-                if(Option == "5")
+                if (Option == "4")
                 {
-                    WriteNameCompany(); 
+                    WriteNameCompany();
 
                     AccessClassEM.FindOldestEmployee();
 
                     ExitMessage();
                 }
-                if(Option == "6")
+                if (Option == "5")
                 {
                     WriteNameCompany();
 
@@ -164,7 +183,7 @@ namespace HR
 
                     ExitMessage();
                 }
-                if(Option == "7")
+                if (Option == "6")
                 {
                     WriteNameCompany();
 
@@ -174,9 +193,9 @@ namespace HR
                     AccessClassEM.DismissEmployee(Registry);
 
                     ExitMessage();
-                
+
                 }
-                if(Option == "8") 
+                if (Option == "7")
                 {
                     WriteNameCompany();
 
@@ -194,7 +213,7 @@ namespace HR
 
                     ExitMessage();
                 }
-                if(Option == "9")
+                if (Option == "8")
                 {
                     WriteNameCompany();
 
@@ -214,7 +233,7 @@ namespace HR
 
                     ExitMessage();
                 }
-                if(Option == "10")
+                if (Option == "9")
                 {
                     WriteNameCompany();
 
@@ -226,7 +245,7 @@ namespace HR
 
                     ExitMessage();
                 }
-                if(Option == "11")
+                if (Option == "10")
                 {
                     WriteNameCompany();
 
@@ -240,6 +259,11 @@ namespace HR
                     AccessClassEM.Rescisao(Registry, Date);
 
                     ExitMessage();
+                }
+                if (Option == "11")
+                {
+                    WriteFile(AccessClassEM.NewHiredEmployee);
+                    Exit = true;
                 }
             }
         }

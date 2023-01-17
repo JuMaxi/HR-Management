@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -13,8 +16,8 @@ namespace HR
 {
     public class EmployeeManagement
     {
-        List<Employee> NewHiredEmployee = new List<Employee>();
-        List<Employee> RemovedEmployee = new List<Employee>();
+        public List<Employee> NewHiredEmployee = new List<Employee>();
+        public List<Employee> RemovedEmployee = new List<Employee>();
         public Calculate Calculate = new Calculate();
 
         public void AddEmployee(Employee NewEmployee)
@@ -85,7 +88,7 @@ namespace HR
             }
         }
 
-       
+
         public void PromoteEmployee(string Registry, double Percentage)
         {
             Employee Employee = CheckRegistry(Registry);
@@ -100,7 +103,7 @@ namespace HR
                 Employee Proportional = NewHiredEmployee[Position];
                 TimeSpan DaysTotal = DateAgreement - Proportional.DateStart;
 
-                if(DaysTotal.Days > 0)
+                if (DaysTotal.Days > 0)
                 {
                     if (DaysTotal.Days < 365)
                     {
@@ -117,7 +120,7 @@ namespace HR
                 }
             }
         }
-       
+
         public void DismissEmployee(string Registry)
         {
             Employee EmployeeRescisao = CheckRegistry(Registry);
