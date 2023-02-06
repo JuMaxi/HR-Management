@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -21,73 +20,48 @@ namespace HR
         public List<Employee> RemovedEmployee = new List<Employee>();
         public Calculate Calculate = new Calculate();
 
-        string ConnectionString = "Server=LAPTOP-P4GEIO8K\\SQLEXPRESS;Database=HR;User Id=sa;Password=S4root;";
-
         public void AddEmployee(Employee NewEmployee)
         {
+            bool NoAdd = false;
+
             NewEmployee.Validate();
 
-           using(SqlConnection Connection = new SqlConnection(ConnectionString))
+            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
-                string insert = "insert into Employee (Name, Registry, CPF, DateStart, MonthlySalary) values ('" + NewEmployee.Name + "','" + NewEmployee.Registry + "','" + NewEmployee.NumberEmployee.Number + "','" + NewEmployee.DateStart.ToString("yyyyMMdd") + "','" + NewEmployee.MonthlySalary + "')";
-                SqlCommand Command = new SqlCommand(insert, Connection);
+                if (NewEmployee.Registry == NewHiredEmployee[Position].Registry)
+                {
+                    NoAdd = true;
 
-                Connection.Open();
-
-                Command.ExecuteNonQuery();
+                    Console.WriteLine("This Employee, Registry Number " + NewEmployee.Registry + " have already been hired. For this reason, your Add was not completed.");
+                }
+            }
+            if (NoAdd == false)
+            {
+                NewHiredEmployee.Add(NewEmployee);
             }
         }
 
         public void ListEmployee()
         {
-           using(SqlConnection Connection = new SqlConnection(ConnectionString))
+            foreach (Employee Line in NewHiredEmployee)
             {
-                string select = "select * from Employee";
-
-                SqlCommand command = new SqlCommand(select, Connection);
-
-                Connection.Open();
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                while(reader.Read())
-                {
-                    Console.WriteLine(" ");
-                    Console.WriteLine("ID: " + reader["Id"]);
-                    Console.WriteLine("Employee Name: " + reader["Name"]);
-                    Console.WriteLine("Registry: " + reader["Registry"]);
-                    Console.WriteLine("CPF: " + reader["CPF"]);
-                    Console.WriteLine("Date Start: " + Convert.ToDateTime(reader["DateStart"]).ToString("yyyy/MM/dd") );
-                    Console.WriteLine("Monthly Salary: " + reader["MonthlySalary"]);
-                }
+                Console.WriteLine("Employee Name: " + Line.Name + "\t CPF: " + Line.NumberEmployee.Number + "\t Registry: " + Line.Registry + "\t Date Start: " + Line.DateStart.ToString("dd/MM/yyyy") + "\t Salary: " + Line.MonthlySalary.ToString("C2"));
             }
         }
 
         public void ShowBirthdayCompany()
         {
-            using(SqlConnection Connection = new SqlConnection(ConnectionString))
+            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
-                string select = "select * from Employee";
+                TimeSpan Difference = DateTime.Now - NewHiredEmployee[Position].DateStart;
 
-                SqlCommand Command = new SqlCommand(select, Connection);
-
-                Connection.Open();
-
-                SqlDataReader Reader = Command.ExecuteReader();
-
-                while(Reader.Read())
+                if (Difference.Days >= 365)
                 {
-                    DateTime DateDB = Convert.ToDateTime(Reader["DateStart"]);
-                    TimeSpan Difference = DateTime.Now - DateDB;
-
-                    if (Difference.Days >= 365)
+                    if (NewHiredEmployee[Position].DateStart.Month == DateTime.Now.Month
+                        && NewHiredEmployee[Position].DateStart.Day <= DateTime.Now.AddDays(15).Day)
                     {
-                        if(DateDB.Month == DateTime.Now.Month
-                            && DateDB.Day <= DateTime.Now.AddDays(15).Day)
-                        {
-                            Console.WriteLine("Congratulations!!! " + Reader["Name"] + " Now you are having 1 year with us! We hope to have a lot more years together!");
+                        Console.WriteLine("Congratulations!!! " + NewHiredEmployee[Position].Name + " Now you are having 1 year with us! We hope to have a lot more years together!");
 
-                        }
                     }
                 }
             }
@@ -95,44 +69,31 @@ namespace HR
 
         internal void FindOldestEmployee()
         {
-            using (SqlConnection Connection = new SqlConnection(ConnectionString))
+            DateTime Oldest = DateTime.Now;
+
+            for (int Position = 0; Position < NewHiredEmployee.Count; Position++)
             {
-                string Select = "select * from Employee";
-
-                SqlCommand Command = new SqlCommand(Select, Connection);
-
-                Connection.Open();
-
-                SqlDataReader Reader = Command.ExecuteReader();
-
-                DateTime Oldest = DateTime.Now;
-                string Name = "";
-
-                while (Reader.Read())
+                if (NewHiredEmployee[Position].DateStart < Oldest)
                 {
-                    DateTime DateDB = Convert.ToDateTime(Reader["DateStart"]);
-
-                    if(DateDB < Oldest)
-                    {
-                        Oldest = DateDB;
-                        Name = Convert.ToString(Reader["Name"]);
-                    }
+                    Oldest = NewHiredEmployee[Position].DateStart;
                 }
-                Console.WriteLine(Name + " you are the oldest employee in this company. You have been with us since " + Oldest.ToString("yyyy/MM/dd") + ". We Hope you continue with us for a long time!");
+            }
+
+            foreach (Employee Line in NewHiredEmployee)
+            {
+                if (Oldest == Line.DateStart)
+                {
+                    Console.WriteLine(Line.Name + " you are the oldest employee in this company. You have been with us since " + Line.DateStart.ToString("dd/MM/yyyy") + " for this reason your total time working here is " + (DateTime.Now.Year - Line.DateStart.Year) + " year(s) " + (DateTime.Now.Month - Line.DateStart.Month) + " month(s) and " + (DateTime.Now.Day - Line.DateStart.Day) + " day(s). We Hope you continue with us for a long time!");
+                }
             }
         }
+
+
         public void PromoteEmployee(string Registry, double Percentage)
         {
-            using(SqlConnection Connection = new SqlConnection(ConnectionString))
-            {
-               string Update = "update Employee set MonthlySalary= MonthlySalary * (1 + " + Percentage + ") where Registry='" + Registry + "'";
-
-                SqlCommand Command = new SqlCommand(Update, Connection);
-
-                Connection.Open();
-
-                Command.ExecuteNonQuery();
-            }
+            Employee Employee = CheckRegistry(Registry);
+            double Promote = Employee.MonthlySalary * Percentage;
+            Employee.MonthlySalary = Employee.MonthlySalary + Promote;
         }
 
         public void UnionAgreement(double Percentage, DateTime DateAgreement)

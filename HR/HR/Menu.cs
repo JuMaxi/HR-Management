@@ -45,16 +45,69 @@ namespace HR
             Console.ReadKey();
             Console.Clear();
         }
-       
+        public void WriteFile(List<Employee> Employees)
+        {
+            string Path = @"C:\Dev\RH\HR\HR\database.csv";
+            List<string> ListLineActual = new List<string>();
+
+            foreach (Employee Line in Employees)
+            {
+                string LineActual = Line.Name + ";" + Line.Registry + ";" + Line.NumberEmployee.Number + ";" + Line.DateStart.ToString("yyyy-MM-dd") + ";" + Line.MonthlySalary.ToString("N2", CultureInfo.GetCultureInfo("pt-BR"));
+
+                ListLineActual.Add(LineActual);
+            }
+            File.WriteAllLines(Path, ListLineActual);
+        }
+        public void ReadFile(EmployeeManagement AccessClassEM)
+        {
+            string Path = @"C:\Dev\RH\HR\HR\database.csv";
+
+            if (File.Exists(Path))
+            {
+                string[] Read = File.ReadAllLines(Path);
+
+                for (int Position = 1; Position < Read.Length; Position++)
+                {
+                    string[] Break = Read[Position].Split(";");
+
+                    string DateReplace = Break[3];
+                    DateReplace = DateReplace.Replace('-', '/');
+                    DateTime Date = Convert.ToDateTime(DateReplace);
+
+                    string SalaryReplace = Break[4];
+                    SalaryReplace = SalaryReplace.Replace(".", "");
+                    SalaryReplace = SalaryReplace.Replace(',', '.');
+                    double Salary = Convert.ToDouble(SalaryReplace);
+
+                    Employee AccessClassE = new Employee();
+
+                    //Part 14
+                    try
+                    {
+                        AccessClassE.Initialize(Break[0], Break[1], Break[2], Date, Salary);
+                        AccessClassEM.AddEmployee(AccessClassE);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Something is wrong. Check the error message, please. " + ex.Message);
+                        Console.WriteLine(" ");
+                    }
+                }
+            }
+        }
+
+
         public void Options(EmployeeManagement AccessClassEM)
         {
-            string Option = "";
+            bool Exit = false;
 
-            while (Option != "11")
+            ReadFile(AccessClassEM);
+
+            while (Exit == false)
             {
                 WriteOptions();
 
-                Option = Console.ReadLine();
+                string Option = Console.ReadLine();
 
                 Console.Clear();
 
@@ -206,6 +259,11 @@ namespace HR
                     AccessClassEM.Rescisao(Registry, Date);
 
                     ExitMessage();
+                }
+                if (Option == "11")
+                {
+                    WriteFile(AccessClassEM.NewHiredEmployee);
+                    Exit = true;
                 }
             }
         }
